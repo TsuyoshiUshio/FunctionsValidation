@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ValidationFunction
 {
-    public class Movie : IValidatable
+    public class Movie
     {
         public string Id { get; set; }
 

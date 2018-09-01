@@ -7,13 +7,10 @@ using System.Text;
 
 namespace ValidationFunction
 {
-    public interface IValidatable
-    {
-    }
 
-    public static class IValidatableExtension
+    public static class ObjectExtension
     {
-        public static (bool isValid, IEnumerable<ValidationResult> validationResults) Validate(this IValidatable obj)
+        public static (bool isValid, IEnumerable<ValidationResult> validationResults) Validate(this Object obj)
         {
             var results = new List<ValidationResult>();
             var isValid = Validator.TryValidateObject(obj, new ValidationContext(obj, null, null), results, true);
