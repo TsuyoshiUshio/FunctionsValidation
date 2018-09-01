@@ -11,26 +11,25 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ValidationFunction
 {
     public static class Function1
     {
         [FunctionName("Function1")]
-        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log)
+        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]HttpRequest req, ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string requestBody = new StreamReader(req.Body).ReadToEnd();
-            var movie = JsonConvert.DeserializeObject<Movie>(requestBody);
-            var result = movie.Validate();
-            if (result.isValid)
+            var body = await req.GetBodyAsync<Movie>();
+            if (body.IsValid)
             {
-                return new OkObjectResult(("Model looks good!"));
+                return new OkObjectResult(body.Value);
             }
             else
             {
-                return new BadRequestObjectResult($"Model is invalid: {string.Join(", ", result.validationResults.Select(s => s.ErrorMessage).ToArray())}");
+                return new BadRequestObjectResult($"Model is invalid: {string.Join(", ", body.ValidationResults.Select(s => s.ErrorMessage).ToArray())}");
             }
 
        }
